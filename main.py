@@ -80,7 +80,6 @@ class AppWidget(QMainWindow):
         self.threadpool.start(worker)
         worker.signal.error_signal.connect(self.error_handler)
 
-
     def load_selected_model(self):
         self.load_model.setEnabled(False)
         selected_data = self.model_select.currentData()
@@ -95,18 +94,20 @@ class AppWidget(QMainWindow):
         self.threadpool.start(worker)
         worker.signal.error_signal.connect(self.error_handler)
 
-        #self.forecaster.predict(self.update_predictions)
 
-
-    def update_predictions(self, data, predictions):
-        self.update_graph(data, predictions)
+    def update_predictions(self, data, predictions, interval):
+        self.update_graph(data, predictions, interval)
         self.update_table(predictions)
 
 
-    def update_graph(self, data, predictions):
+    def update_graph(self, data, predictions, interval):
         self.MplWidget.canvas.axes.clear()
-        self.MplWidget.canvas.axes.xaxis.set_major_locator(md.HourLocator(interval=4))
-        self.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
+        if interval == "1h":
+            self.MplWidget.canvas.axes.xaxis.set_major_locator(md.HourLocator(interval=4))
+            self.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%H:%M'))
+        else:
+            self.MplWidget.canvas.axes.xaxis.set_major_locator(md.DayLocator(interval=4))
+            self.MplWidget.canvas.axes.xaxis.set_major_formatter(md.DateFormatter('%m-%d'))
         self.MplWidget.canvas.axes.plot(data['datetime'], data['close'])
         self.MplWidget.canvas.axes.set_xlabel('Time')
         self.MplWidget.canvas.axes.set_ylabel(self.forecaster.pairName)
@@ -125,7 +126,7 @@ class AppWidget(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     loop = QEventLoop(app)
-    asyncio.set_event_loop(loop)  # NEW must set the event loop
+    asyncio.set_event_loop(loop)
 
     w = AppWidget()
     w.show()
