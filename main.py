@@ -5,7 +5,6 @@ from forecast import Forecaster
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.dates as md
 from asyncqt import QEventLoop
-
 import asyncio
 import os
 import sys
@@ -13,7 +12,6 @@ import sys
 
 class WorkerSignals(QObject):
     error_signal = pyqtSignal(str)
-
 
 class Worker(QRunnable):
 
@@ -94,11 +92,9 @@ class AppWidget(QMainWindow):
         self.threadpool.start(worker)
         worker.signal.error_signal.connect(self.error_handler)
 
-
     def update_predictions(self, data, predictions, interval):
         self.update_graph(data, predictions, interval)
         self.update_table(predictions)
-
 
     def update_graph(self, data, predictions, interval):
         self.MplWidget.canvas.axes.clear()

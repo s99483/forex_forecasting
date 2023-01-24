@@ -15,4 +15,4 @@ class ForexApi():
         dataframe['datetime'] = pd.to_datetime(dataframe['datetime'])
         dataframe.sort_values(by='datetime', inplace=True)
         dataframe['close'] = pd.to_numeric(dataframe['close'])
-        return dataframe, interval
+        return dataframe
